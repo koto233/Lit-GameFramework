@@ -33,6 +33,11 @@ namespace Framework
 
         #endregion
 
+        /// <summary>
+        /// 获取指定类
+        /// </summary>
+        /// <typeparam name="T">类名</typeparam>
+        /// <returns></returns>
         public T GetManager<T>() where T : ManagerBase
         {
             var managerType = typeof(T);
@@ -83,6 +88,27 @@ namespace Framework
 
             manager.Init();
             return manager;
+        }
+
+        /// <summary>
+        /// 移除销毁模块管理器
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public void RemoveManager<T>() where T : ManagerBase
+        {
+            var managerType = typeof(T);
+            var node = _managers.First;
+            while (node != null)
+            {
+                if (node.Value.GetType() == managerType)
+                {
+                    node.Value.Shutdown();
+                    _managers.Remove(node);
+                    return;
+                }
+
+                node = node.Next;
+            }
         }
     }
 }
