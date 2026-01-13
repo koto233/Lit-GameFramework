@@ -73,8 +73,6 @@ public class UIBindInspector : Editor
                 bind.Editor_SetTarget(newTarget);
                 EditorUtility.SetDirty(bind);
             }
-
-            DrawTypeQuickSelect(bind, go);
         }
 
         EditorGUILayout.Space(6);
@@ -82,42 +80,20 @@ public class UIBindInspector : Editor
         DrawStatus(bind);
     }
 
-    void DrawTypeQuickSelect(UIBind bind, GameObject go)
-    {
-        var types = UIBindAutoResolver.GetCandidateTypes(go);
-        if (types.Length == 0)
-            return;
-
-        var labels = types.Select(t => t.Name).ToArray();
-
-        EditorGUILayout.LabelField("快捷选择组件类型");
-
-        int choice = EditorGUILayout.Popup(-1, labels);
-        if (choice >= 0)
-        {
-            var comp = go.GetComponent(types[choice]);
-            if (comp != null)
-            {
-                Undo.RecordObject(bind, "UIBind Quick Select");
-                bind.Editor_SetTarget(comp);
-                EditorUtility.SetDirty(bind);
-            }
-        }
-    }
-
     void DrawStatus(UIBind bind)
     {
-        if (bind.Target == null)
+        Color bg = bind.Target == null ? new Color(1f, 0.4f, 0.4f) : new Color(0.6f, 1f, 0.6f); // 红色 / 绿色
+        string msg = bind.Target == null ? "未绑定任何组件（运行时会报错）" : $"已绑定：{bind.Target.GetType().Name}";
+
+        // 自定义颜色背景 HelpBox
+        var rect = GUILayoutUtility.GetRect(0, 40, GUILayout.ExpandWidth(true));
+        EditorGUI.DrawRect(rect, bg);
+        GUIStyle style = new GUIStyle(EditorStyles.label)
         {
-            EditorGUILayout.HelpBox(
-                "未绑定任何组件（运行时会报错）",
-                MessageType.Error);
-        }
-        else
-        {
-            EditorGUILayout.HelpBox(
-                $"已绑定：{bind.Target.GetType().Name}",
-                MessageType.Info);
-        }
+            alignment = TextAnchor.MiddleLeft,
+            fontStyle = FontStyle.Bold,
+            normal = { textColor = Color.black }
+        };
+        EditorGUI.LabelField(rect, msg, style);
     }
 }

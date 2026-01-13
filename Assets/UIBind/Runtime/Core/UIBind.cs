@@ -6,7 +6,7 @@ public class UIBind : MonoBehaviour
 
     [SerializeField] private Component target;
 
-    [SerializeField] private bool manualOverride; // ⭐ 新增
+    [SerializeField] private bool manualOverride; 
 
     public int Index => index;
     public Component Target => target;

@@ -66,15 +66,21 @@ public static class UIAutoBindGenerator
         sb.AppendLine($"    public partial class {className}");
         sb.AppendLine("    {");
 
-        // 字段
+        // =====================
+        // 字段声明
+        // =====================
         for (int i = 0; i < binds.Length; i++)
         {
             var bind = binds[i];
             var comp = UIBindAutoResolver.Resolve(bind);
             if (comp == null) continue;
 
-            var fieldName = "_" + MakeSafeFieldName(bind.name);
-            sb.AppendLine($"         [SerializeField] private {comp.GetType().Name} {fieldName};");
+            var fieldName = MakeFieldName(comp, bind);
+            var typeName = comp.GetType().Name;
+
+            sb.AppendLine(
+                $"        private @{typeName} {fieldName};"
+            );
         }
 
         sb.AppendLine();
@@ -82,15 +88,21 @@ public static class UIAutoBindGenerator
         sb.AppendLine("        {");
         sb.AppendLine("            base.GetUI();");
 
+        // =====================
         // 赋值
+        // =====================
         for (int i = 0; i < binds.Length; i++)
         {
             var bind = binds[i];
             var comp = UIBindAutoResolver.Resolve(bind);
             if (comp == null) continue;
 
-            var fieldName = "_" + MakeSafeFieldName(bind.name);
-            sb.AppendLine($"            {fieldName} = GetBind<{comp.GetType().Name}>({i});");
+            var fieldName = MakeFieldName(comp, bind);
+            var typeName = comp.GetType().Name;
+
+            sb.AppendLine(
+                $"            {fieldName} = GetBind<@{typeName}>({i});"
+            );
         }
 
         sb.AppendLine("        }");
@@ -104,9 +116,28 @@ public static class UIAutoBindGenerator
             Directory.CreateDirectory(dir);
 
         var path = $"{dir}/{className}.Bind.g.cs";
-        File.WriteAllText(path, sb.ToString(), Encoding.UTF8);
+        if (File.Exists(path))
+        {
+            var old = File.ReadAllText(path);
+            if (old == sb.ToString())
+                return; // 内容一致，不刷新
+        }
+        File.WriteAllText(path, sb.ToString());
 
         AssetDatabase.Refresh();
+    }
+
+    // =====================
+    // 命名工具
+    // =====================
+
+    static string MakeFieldName(Component comp, UIBind bind)
+    {
+        var typeName = comp.GetType().Name;
+        var nodeName = MakeSafeFieldName(bind.name);
+
+        // 使用 @ 提高区分度 & 安全性
+        return $"@_auto_{typeName}_{nodeName}";
     }
 
     static string MakeSafeFieldName(string name)
