@@ -111,11 +111,25 @@ public static class UIAutoBindGenerator
         if (!string.IsNullOrEmpty(ns))
             sb.AppendLine("}");
 
-        var dir = "Assets/UI/Generated";
+        var dir = ui.GeneratedScriptPath;
+        if (!IsValidGeneratePath(dir, out var error))
+        {
+            EditorUtility.DisplayDialog(
+                "UI AutoBind 生成失败",
+                error,
+                "OK"
+            );
+            return;
+        }
         if (!Directory.Exists(dir))
             Directory.CreateDirectory(dir);
 
-        var path = $"{dir}/{className}.Bind.g.cs";
+        var path = Path.Combine(dir, $"{className}.Bind.g.cs");
+        File.WriteAllText(path, sb.ToString(), Encoding.UTF8);
+        Debug.Log($"[UIAutoBind] 刷新 AssetDatabase：{path}");
+        if (!Directory.Exists(dir))
+            Directory.CreateDirectory(dir);
+
         if (File.Exists(path))
         {
             var old = File.ReadAllText(path);
@@ -167,4 +181,26 @@ public static class UIAutoBindGenerator
         }
         return path;
     }
+    static bool IsValidGeneratePath(string path, out string error)
+    {
+        error = null;
+
+        if (string.IsNullOrEmpty(path))
+        {
+            error = "生成路径为空";
+            return false;
+        }
+
+        path = path.Replace("\\", "/");
+
+        if (path.StartsWith("Assets/Packages") ||
+            path.StartsWith("Assets/Library"))
+        {
+            error = "禁止生成到 Packages / Library 目录";
+            return false;
+        }
+
+        return true;
+    }
+
 }

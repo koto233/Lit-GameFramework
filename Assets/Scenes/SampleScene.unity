@@ -827,6 +827,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b34780cb8f3f5c94393e0ed6a1954b25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _generatedScriptPath: UIBind\Sample\UI\Generated
 --- !u!1 &2096796654
 GameObject:
   m_ObjectHideFlags: 0

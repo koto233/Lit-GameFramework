@@ -4,6 +4,15 @@ using UnityEngine;
 public abstract class UIBase : MonoBehaviour
 {
     private UIBind[] _binds;
+    [Header("自动绑定脚本路径")]
+    private string _pathPrefix = "Assets/";
+    [SerializeField]
+    private string _generatedScriptPath = $"UI/Generated";
+
+    public string GeneratedScriptPath
+        => string.IsNullOrEmpty(_generatedScriptPath)
+            ? "Assets/UI/Generated"
+            : _pathPrefix + _generatedScriptPath;
 
     protected virtual void Awake()
     {
