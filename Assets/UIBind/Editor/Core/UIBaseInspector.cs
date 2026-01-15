@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using System.Linq;
 
 [CustomEditor(typeof(UIBase), true)]
 public class UIBaseInspector : Editor
 {
     SerializedProperty _pathProp;
+    private Vector2 _bindPreviewScroll;
 
     void OnEnable()
     {
@@ -34,7 +36,7 @@ public class UIBaseInspector : Editor
 
         // 1️⃣ 自动生成绑定预览
         DrawBindingsPreview(ui);
-
+        DrawSubUIPreview(ui);
         EditorGUILayout.Space();
 
         // 2️⃣ 其余正常字段（排除自动生成字段和 m_Script）
@@ -72,9 +74,19 @@ public class UIBaseInspector : Editor
                 GUI.color = new Color(0.8f, 1f, 0.8f); // 绿色表示绑定成功
 
             EditorGUILayout.BeginHorizontal();
+            if (binds.Length > 5)
+            {
+                _bindPreviewScroll = EditorGUILayout.BeginScrollView(
+                    _bindPreviewScroll,
+                    GUILayout.MaxHeight(200)
+                );
+            }
+            else
+            {
+                // 字段名显示
+                EditorGUILayout.LabelField($"@_{bind.name}", GUILayout.Width(160));
+            }
 
-            // 字段名显示
-            EditorGUILayout.LabelField($"@_{bind.name}", GUILayout.Width(160));
 
             // 类型/对象显示
             EditorGUILayout.ObjectField(target, typeof(Component), true);
@@ -88,5 +100,56 @@ public class UIBaseInspector : Editor
         }
 
         EditorGUILayout.EndVertical();
+        if (binds.Length > 5)
+        {
+            EditorGUILayout.EndScrollView();
+        }
     }
+    void DrawSubUIPreview(UIBase ui)
+    {
+        var subUIs = ui.GetComponentsInChildren<UIBase>(true)
+                       .Where(x => x != ui)
+                       .ToArray();
+
+        if (subUIs.Length == 0)
+            return;
+
+        var referenced = UIBindAutoResolver.CollectReferencedUIs(ui);
+
+        EditorGUILayout.Space(8);
+        EditorGUILayout.LabelField("子 UI 模块预览", EditorStyles.boldLabel);
+
+        EditorGUILayout.BeginVertical("box");
+
+        foreach (var sub in subUIs)
+        {
+           bool used = referenced.TryGetValue(sub, out var fieldName);
+            string label = used
+                          ? $"已引用 ({fieldName})"
+                          : "未引用!";
+            Color old = GUI.color;
+            GUI.color = used
+                ? new Color(0.7f, 1f, 0.7f)
+                : new Color(1f, 0.85f, 0.5f);
+
+            EditorGUILayout.BeginHorizontal();
+
+            EditorGUILayout.LabelField(sub.GetType().Name, GUILayout.Width(160));
+            EditorGUILayout.ObjectField(sub, typeof(UIBase), true);
+
+            if (GUILayout.Button("查看", GUILayout.Width(40)))
+            {
+                Selection.activeObject = sub.gameObject;
+            }
+
+            EditorGUILayout.LabelField(label, GUILayout.Width(120));
+
+            EditorGUILayout.EndHorizontal();
+            GUI.color = old;
+        }
+
+
+        EditorGUILayout.EndVertical();
+    }
+
 }

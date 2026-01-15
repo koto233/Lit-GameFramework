@@ -5,81 +5,45 @@ using System.Linq;
 [CustomEditor(typeof(UIBind))]
 public class UIBindInspector : Editor
 {
+
+    SerializedProperty indexProp, targetProp, manualProp;
+    void OnEnable()
+    {
+        indexProp = serializedObject.FindProperty("index");
+        targetProp = serializedObject.FindProperty("target");
+        manualProp = serializedObject.FindProperty("manualOverride");
+    }
     public override void OnInspectorGUI()
     {
+        serializedObject.Update();
+
+        using (new EditorGUI.DisabledScope(true))
+            EditorGUILayout.PropertyField(indexProp, new GUIContent("Index"));
+
+        EditorGUILayout.PropertyField(manualProp, new GUIContent("手动指定组件"));
+
         var bind = (UIBind)target;
-        var go = bind.gameObject;
-
-        EditorGUILayout.LabelField("UI Bind", EditorStyles.boldLabel);
-
-        // ===== Index（只读）=====
-        using (new EditorGUI.DisabledScope(true))
-        {
-            EditorGUILayout.IntField("Index", bind.Index);
-        }
-
-        EditorGUILayout.Space(6);
-
-        // ===== 手动覆盖开关 =====
-        EditorGUI.BeginChangeCheck();
-        bool manual = EditorGUILayout.Toggle("手动指定组件", bind.ManualOverride);
-        if (EditorGUI.EndChangeCheck())
-        {
-            Undo.RecordObject(bind, "Toggle Manual Override");
-            bind.Editor_SetManual(manual);
-            EditorUtility.SetDirty(bind);
-        }
-
-        EditorGUILayout.Space(6);
-
-        // ===== 自动推断 =====
         var auto = UIBindAutoResolver.Resolve(bind);
-
         using (new EditorGUI.DisabledScope(true))
-        {
-            EditorGUILayout.ObjectField(
-                "自动推断结果",
-                auto,
-                typeof(Component),
-                true);
-        }
+            EditorGUILayout.ObjectField("自动推断结果", auto, typeof(Component), true);
 
-        // ⭐ 核心逻辑：默认自动写入
-        if (!bind.ManualOverride)
+        if (!manualProp.boolValue)
         {
-            if (auto != null && bind.Target != auto)
+            if (auto != null && targetProp.objectReferenceValue != auto)
             {
-                Undo.RecordObject(bind, "Auto Assign UIBind Target");
-                bind.Editor_SetTarget(auto);
-                EditorUtility.SetDirty(bind);
+                Undo.RecordObject(bind, "自动绑定");
+                targetProp.objectReferenceValue = auto;
             }
         }
-
-        EditorGUILayout.Space(6);
-
-        // ===== 手动模式 =====
-        if (bind.ManualOverride)
+        else
         {
-            EditorGUI.BeginChangeCheck();
-            var newTarget = EditorGUILayout.ObjectField(
-                "绑定组件",
-                bind.Target,
-                typeof(Component),
-                true) as Component;
-
-            if (EditorGUI.EndChangeCheck())
-            {
-                Undo.RecordObject(bind, "Set UIBind Target");
-                bind.Editor_SetTarget(newTarget);
-                EditorUtility.SetDirty(bind);
-            }
+            EditorGUILayout.PropertyField(targetProp, new GUIContent("绑定组件"));
         }
 
-        EditorGUILayout.Space(6);
+        serializedObject.ApplyModifiedProperties();
 
         DrawStatus(bind);
     }
-
     void DrawStatus(UIBind bind)
     {
         Color bg = bind.Target == null ? new Color(1f, 0.4f, 0.4f) : new Color(0.6f, 1f, 0.6f); // 红色 / 绿色

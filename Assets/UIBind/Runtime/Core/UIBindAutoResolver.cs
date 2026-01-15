@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Linq;
+using System.Collections.Generic;
+using System.Reflection;
 
 public static class UIBindAutoResolver
 {
@@ -49,5 +51,35 @@ public static class UIBindAutoResolver
             .Select(c => c.GetType())
             .Distinct()
             .ToArray();
+    }
+    public static HashSet<UIBase> CollectReferencedUIs(UIBase ui)
+    {
+        var result = new HashSet<UIBase>();
+        if (ui == null)
+            return result;
+
+        var type = ui.GetType();
+
+        // 扫描实例字段（public + private）
+        var fields = type.GetFields(
+            BindingFlags.Instance |
+            BindingFlags.Public |
+            BindingFlags.NonPublic
+        );
+
+        foreach (var field in fields)
+        {
+            // 只关心 UIBase 或其子类
+            if (!typeof(UIBase).IsAssignableFrom(field.FieldType))
+                continue;
+
+            var value = field.GetValue(ui) as UIBase;
+            if (value == null)
+                continue;
+
+            result.Add(value);
+        }
+
+        return result;
     }
 }

@@ -161,14 +161,16 @@ public static class UIAutoBindGenerator
 
     static string GetHierarchyPath(Transform t)
     {
-        var path = t.name;
-        while (t.parent != null)
+        var parts = new List<string>();
+        while (t != null)
         {
+            parts.Add($"{t.GetSiblingIndex():000}_{t.name}");
             t = t.parent;
-            path = t.name + "/" + path;
         }
-        return path;
+        parts.Reverse();
+        return string.Join("/", parts);
     }
+
     static bool IsValidGeneratePath(string path, out string error)
     {
         error = null;

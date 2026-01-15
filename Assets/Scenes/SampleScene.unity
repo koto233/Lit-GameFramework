@@ -305,7 +305,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a59cf173a332bc6458d2f8d7e9f4adc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 1
+  index: 0
   target: {fileID: 483305762}
   manualOverride: 0
 --- !u!1 &487651083
@@ -625,7 +625,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a59cf173a332bc6458d2f8d7e9f4adc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 0
+  index: 1
   target: {fileID: 1030640156}
   manualOverride: 0
 --- !u!114 &1030640156
