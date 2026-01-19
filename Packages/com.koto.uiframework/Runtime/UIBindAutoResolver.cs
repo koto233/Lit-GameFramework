@@ -4,6 +4,8 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
+using TMPro;
+
 namespace com.koto.UIFramework
 {
     public static class UIBindAutoResolver
@@ -18,7 +20,7 @@ namespace com.koto.UIFramework
         typeof(Slider),
         typeof(ScrollRect),
         typeof(Dropdown),
-    };
+        typeof(TextMeshProUGUI),};
 
         public static Component Resolve(UIBind bind)
         {
