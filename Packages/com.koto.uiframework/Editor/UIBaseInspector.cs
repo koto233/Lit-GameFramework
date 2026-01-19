@@ -1,7 +1,9 @@
 using UnityEngine;
 using UnityEditor;
 using System.Linq;
-namespace com.koto.UIFramework
+using UIFramework.Core.Panel;
+using UIFramework.Core.Utility;
+namespace UIFramework.EditorTools
 {
     [CustomEditor(typeof(UIBase), true)]
     public class UIBaseInspector : Editor

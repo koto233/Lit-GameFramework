@@ -5,8 +5,9 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 using TMPro;
+using UIFramework.Core.Panel;
 
-namespace com.koto.UIFramework
+namespace UIFramework.Core.Utility
 {
     public static class UIBindAutoResolver
     {

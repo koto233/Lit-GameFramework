@@ -1,9 +1,11 @@
 using System.Linq;
 using UnityEngine;
-namespace com.koto.UIFramework
+namespace UIFramework.Core.Panel
 {
     public abstract class UIBase : MonoBehaviour
     {
+
+        #region 自动绑定字段
         private UIBind[] _binds;
         [Header("自动绑定脚本路径")]
         private string _pathPrefix = "Assets/";
@@ -14,13 +16,33 @@ namespace com.koto.UIFramework
             => string.IsNullOrEmpty(_generatedScriptPath)
                 ? "Assets/UI/Generated"
                 : _pathPrefix + _generatedScriptPath;
+        #endregion
+
+        public bool IsShown { get; private set; }
+
 
         protected virtual void Awake()
         {
             CacheBinds();
             GetUI(); // 子类 partial 中生成
         }
+        internal void ShowInternal(object param)
+        {
+            IsShown = true;
+            OnShowInternal(param);
+        }
 
+        internal void HideInternal()
+        {
+            IsShown = false;
+            OnHide();
+        }
+
+        protected abstract void OnShowInternal(object param);
+        protected virtual void OnHide() { }
+
+
+        #region 自动绑定方法
         void CacheBinds()
         {
             _binds = GetComponentsInChildren<UIBind>(true)
@@ -63,5 +85,9 @@ namespace com.koto.UIFramework
         /// Editor 生成的 partial 会 override
         /// </summary>
         protected virtual void GetUI() { }
+
+        #endregion
+
+
     }
 }

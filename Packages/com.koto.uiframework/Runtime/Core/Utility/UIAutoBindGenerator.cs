@@ -4,7 +4,10 @@ using System.Text;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
-namespace com.koto.UIFramework
+using UIFramework.Core.Panel;
+
+
+namespace UIFramework.Core.Utility
 {
     public static class UIAutoBindGenerator
     {
