@@ -1,5 +1,5 @@
 using UnityEngine;
-namespace UIFramework.Core.Panel
+namespace Koto.UIFramework.Core.Panel
 {
     public class UIBind : MonoBehaviour
     {

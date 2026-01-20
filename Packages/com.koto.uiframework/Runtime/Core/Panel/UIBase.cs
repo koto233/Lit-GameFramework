@@ -1,6 +1,6 @@
 using System.Linq;
 using UnityEngine;
-namespace UIFramework.Core.Panel
+namespace Koto.UIFramework.Core.Panel
 {
     public abstract class UIBase : MonoBehaviour
     {
@@ -25,6 +25,10 @@ namespace UIFramework.Core.Panel
         {
             CacheBinds();
             GetUI(); // 子类 partial 中生成
+        }
+        internal void OnCreateInternal()
+        {
+
         }
         internal void ShowInternal(object param)
         {

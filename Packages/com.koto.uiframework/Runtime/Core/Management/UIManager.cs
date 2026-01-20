@@ -1,41 +1,39 @@
-using System;
-using System.Collections.Generic;
-using UIFramework.Core.Panel;
+using Koto.UIFramework.Core.Factory;
+using Koto.UIFramework.Core.Panel;
+using Koto.UIFramework.Core.Router;
+using Koto.UIFramework.Core.Service;
 
-namespace UIFramework.Core.Management
+namespace Koto.UI.Core.Management
 {
-    public class UIManager
+    public sealed class UIManager
     {
-        private readonly Dictionary<Type, UIBase> _cache =
-            new Dictionary<Type, UIBase>();
+        private readonly IPanelFactory _factory;
+        private readonly IUIRouter _router;
+        private readonly IUILayerService _layer;
 
-        public TPanel Open<TPanel, TParam>(TParam param)
-            where TPanel : UIPanel<TParam>
+        public UIManager(IPanelFactory factory, IUIRouter router, IUILayerService layer)
         {
-            var type = typeof(TPanel);
-
-            if (!_cache.TryGetValue(type, out var panel))
-            {
-                // panel = CreatePanel(type);
-                _cache[type] = panel;
-            }
-
-            panel.ShowInternal(param);
-            return (TPanel)panel;
+            _factory = factory;
+            _router = router;
+            _layer = layer;
         }
 
-        public TPanel Open<TPanel>()
-            where TPanel : UIPanel
+        public TPanel Open<TPanel, TParam>(TParam param) where TPanel : UIPanel<TParam>
+        {
+            var panel = (TPanel)_factory.Create(typeof(TPanel));
+            _layer.Attach(panel);
+            _router.Push(panel, param);
+            return panel;
+        }
+
+        public TPanel Open<TPanel>()  where TPanel : UIPanel
         {
             return Open<TPanel, Unit>(Unit.Default);
         }
 
-        // private UIBase CreatePanel(Type panelType)
-        // {
-        //     // 这里后续可以接 Addressables / DI / Factory
-        //     var prefab = LoadPrefab(panelType);
-        //     return Instantiate(prefab).GetComponent<UIBase>();
-        // }
+        public void Back()
+        {
+            _router.Pop();
+        }
     }
-
 }

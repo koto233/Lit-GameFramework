@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEditor;
 using System.Linq;
-using UIFramework.Core.Panel;
-using UIFramework.Core.Utility;
-namespace UIFramework.EditorTools
+using Koto.UIFramework.Core.Panel;
+using Koto.UIFramework.Core.Utility;
+namespace Koto.UIFramework.EditorTools
 {
     [CustomEditor(typeof(UIBase), true)]
     public class UIBaseInspector : Editor
@@ -76,19 +76,9 @@ namespace UIFramework.EditorTools
                     GUI.color = new Color(0.8f, 1f, 0.8f); // 绿色表示绑定成功
 
                 EditorGUILayout.BeginHorizontal();
-                if (binds.Length > 5)
-                {
-                    _bindPreviewScroll = EditorGUILayout.BeginScrollView(
-                        _bindPreviewScroll,
-                        GUILayout.MaxHeight(200)
-                    );
-                }
-                else
-                {
-                    // 字段名显示
-                    EditorGUILayout.LabelField($"@_{bind.name}", GUILayout.Width(160));
-                }
 
+                // 字段名显示
+                EditorGUILayout.LabelField($"@_{bind.name}", GUILayout.Width(160));
 
                 // 类型/对象显示
                 EditorGUILayout.ObjectField(target, typeof(Component), true);
@@ -102,10 +92,6 @@ namespace UIFramework.EditorTools
             }
 
             EditorGUILayout.EndVertical();
-            if (binds.Length > 5)
-            {
-                EditorGUILayout.EndScrollView();
-            }
         }
         void DrawSubUIPreview(UIBase ui)
         {

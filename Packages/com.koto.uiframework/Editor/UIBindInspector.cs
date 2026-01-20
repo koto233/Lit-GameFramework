@@ -1,9 +1,9 @@
 using UnityEditor;
 using UnityEngine;
-using UIFramework.Core.Panel;
-using UIFramework.Core.Utility;
+using Koto.UIFramework.Core.Panel;
+using Koto.UIFramework.Core.Utility;
 
-namespace UIFramework.EditorTools
+namespace Koto.UIFramework.EditorTools
 {
     [CustomEditor(typeof(UIBind))]
     public class UIBindInspector : Editor

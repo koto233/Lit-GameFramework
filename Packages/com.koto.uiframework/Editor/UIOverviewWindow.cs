@@ -1,8 +1,8 @@
 using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
-using UIFramework.Core.Panel;
-namespace UIFramework.EditorTools
+using Koto.UIFramework.Core.Panel;
+namespace Koto.UIFramework.EditorTools
 {
     public class UIOverviewWindow : EditorWindow
     {
