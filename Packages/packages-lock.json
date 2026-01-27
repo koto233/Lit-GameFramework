@@ -1,11 +1,5 @@
 {
   "dependencies": {
-    "com.koto.uiframework": {
-      "version": "file:com.koto.uiframework",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {}
-    },
     "com.unity.asset-store-validation": {
       "version": "0.1.3",
       "depth": 1,
@@ -148,7 +142,7 @@
       }
     },
     "com.unity.upm.develop": {
-      "version": "0.5.1",
+      "version": "0.5.3-exp.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
