@@ -5,14 +5,20 @@ using LitGameFramework.UIFramework.Core.Router;
 using LitGameFramework.UIFramework.Core.Service;
 namespace LitGameFramework.Core
 {
-    public class GlobalInstaller : MonoInstaller
+    /// <summary>
+    /// 游戏入口
+    /// </summary>
+    public class GameEntry : MonoBehaviour
     {
-        public override bool IsGlobal => true;
-
-        public override void Install(LifetimeScope scope)
+        void Start()
         {
-            Debug.Log("注册");
+            Register(GameRoot.I.GlobalScope);
+        }
 
+        private void Register(LifetimeScope scope)
+        {
+            Debug.Log("注册全局服务");
+            // TODO: 注册全局服务
             scope.RegisterSingleton(() => new UIManager(scope.Resolve<IPanelFactory>(), scope.Resolve<IUIRouter>(), scope.Resolve<IUILayerService>()));
         }
 
