@@ -1,9 +1,10 @@
 using UnityEngine;
 using UnityEditor;
 using System.Linq;
-using LitGameFramework.UIFramework.Core.Panel;
-using LitGameFramework.UIFramework.Core.Utility;
-namespace LitGameFramework.UIFramework.EditorTools
+using LitGameFramework.UI.Core.Window;
+using LitGameFramework.UI.Core.Utility;
+using LitGameFramework.UI.Core;
+namespace LitGameFramework.UI.EditorTools
 {
     [CustomEditor(typeof(UIBase), true)]
     public class UIBaseInspector : Editor

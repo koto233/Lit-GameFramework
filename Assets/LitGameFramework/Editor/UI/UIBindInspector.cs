@@ -1,9 +1,9 @@
 using UnityEditor;
 using UnityEngine;
-using LitGameFramework.UIFramework.Core.Panel;
-using LitGameFramework.UIFramework.Core.Utility;
+using LitGameFramework.UI.Core.Utility;
+using LitGameFramework.UI.Core;
 
-namespace LitGameFramework.UIFramework.EditorTools
+namespace LitGameFramework.UI.EditorTools
 {
     [CustomEditor(typeof(UIBind))]
     public class UIBindInspector : Editor

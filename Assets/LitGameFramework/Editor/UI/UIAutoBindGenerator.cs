@@ -4,10 +4,10 @@ using System.Text;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
-using LitGameFramework.UIFramework.Core.Panel;
+using LitGameFramework.UI.Core.Window;
 
 
-namespace LitGameFramework.UIFramework.Core.Utility
+namespace LitGameFramework.UI.Core.Utility
 {
     public static class UIAutoBindGenerator
     {

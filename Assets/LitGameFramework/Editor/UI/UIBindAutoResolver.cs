@@ -5,9 +5,9 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 using TMPro;
-using LitGameFramework.UIFramework.Core.Panel;
+using LitGameFramework.UI.Core.Window;
 
-namespace LitGameFramework.UIFramework.Core.Utility
+namespace LitGameFramework.UI.Core.Utility
 {
     public static class UIBindAutoResolver
     {

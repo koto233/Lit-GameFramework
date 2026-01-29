@@ -1,0 +1,51 @@
+using System;
+using System.Collections.Generic;
+
+namespace LitGameFramework.Core
+{
+    public sealed class LifetimeScope : IDisposable
+    {
+        private readonly Dictionary<Type, object> _instances = new();
+        private bool _disposed;
+
+        public void Register<T>(T instance) where T : class
+        {
+            _instances[typeof(T)] = instance;
+        }
+
+        public T Resolve<T>() where T : class
+        {
+            if (_disposed)
+                throw new ObjectDisposedException(nameof(LifetimeScope));
+
+            if (_instances.TryGetValue(typeof(T), out var obj))
+                return obj as T;
+
+            throw new InvalidOperationException($"{typeof(T)} 未注册");
+        }
+
+        public bool TryResolve<T>(out T instance) where T : class
+        {
+            if (_instances.TryGetValue(typeof(T), out var obj))
+            {
+                instance = obj as T;
+                return true;
+            }
+
+            instance = null;
+            return false;
+        }
+
+        public void Dispose()
+        {
+            if (_disposed) return;
+            _disposed = true;
+
+            foreach (var obj in _instances.Values)
+                if (obj is IDisposable d) d.Dispose();
+
+            _instances.Clear();
+        }
+    }
+
+}

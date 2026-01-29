@@ -1,8 +1,8 @@
 using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
-using LitGameFramework.UIFramework.Core.Panel;
-namespace LitGameFramework.UIFramework.EditorTools
+using LitGameFramework.UI.Core.Window;
+namespace LitGameFramework.UI.EditorTools
 {
     public class UIOverviewWindow : EditorWindow
     {
