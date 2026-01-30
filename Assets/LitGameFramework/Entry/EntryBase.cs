@@ -10,10 +10,10 @@ namespace LitGameFramework.Entry
 
         protected virtual void Start()
         {
-            var scope = GameRoot.I.CurrentSceneScope;
-
-            Register(scope);
-            Initialize(scope);
+            GameRoot.I.BeginSceneScope();
+            var sceneScope = GameRoot.ResolverHub.SceneScope;
+            Register(sceneScope);
+            Initialize(sceneScope);
         }
     }
 }

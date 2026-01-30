@@ -1,3 +1,28 @@
+# LitGameFramework
+
+一个 **轻量、显式、长期可维护** 的 Unity 游戏框架骨架。  
+不自动扫描、不隐式注入、不魔法启动。
+
+---
+
+## 一、项目结构
+
+```text
+Assets
+├─ LitGameFramework        # 框架（可整体拷走）
+│  ├─ Core
+│  ├─ Runtime
+│  ├─ UI
+│  ├─ Services
+│  └─ Editor
+│
+└─ Game                    # 业务代码
+   ├─ Scenes
+   ├─ UI
+   ├─ SignIn
+   └─ Editor
+
+
 ## 依赖管理规范
 
 ### 允许使用 `GameRoot.I.Get<T>()` 的场景：
@@ -24,6 +49,13 @@ public class ShopService : IShopService
         _economy = economy;
     }
 }
+Unity
+  ↓
+GameRoot        （框架，全局生命周期）
+  ↓
+GameEntry       （业务，全局注册）
+  ↓
+SceneEntry      （业务，场景启动）
 
 
 一、核心根节点

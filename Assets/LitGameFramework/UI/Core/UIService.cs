@@ -29,7 +29,7 @@ namespace LitGameFramework.UI.Core.Service
             _configs[typeof(T)] = new UIConfig(prefabPath, layer);
         }
 
-        public T Open<T>(object args = null)
+        public T Open<T>(IUIArgs args = null)
             where T : UIWindow
         {
             var type = typeof(T);

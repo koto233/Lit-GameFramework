@@ -14,16 +14,7 @@ namespace LitGameFramework.Core
     public sealed class GameRoot : MonoBehaviour
     {
         public static GameRoot I { get; private set; }
-
-        /// <summary>
-        /// 跨场景常驻服务（UI、配置、网络等）
-        /// </summary>
-        internal LifetimeScope GlobalScope { get; private set; }
-
-        /// <summary>
-        /// 当前场景级服务（Controller、Scene System 等）
-        /// </summary>
-        internal LifetimeScope CurrentSceneScope { get; private set; }
+        internal static ResolverHub ResolverHub;
 
         private void Awake()
         {
@@ -35,50 +26,24 @@ namespace LitGameFramework.Core
 
             I = this;
             DontDestroyOnLoad(gameObject);
-
-            GlobalScope = new LifetimeScope();
-
-            SceneManager.sceneLoaded += OnSceneLoaded;
-            SceneManager.sceneUnloaded += OnSceneUnloaded;
+            ResolverHub = new ResolverHub();
         }
 
         private void OnDestroy()
         {
-            SceneManager.sceneLoaded -= OnSceneLoaded;
-            SceneManager.sceneUnloaded -= OnSceneUnloaded;
             I = null;
-            CurrentSceneScope?.Dispose();
-            GlobalScope?.Dispose();
+            ResolverHub.EndAllScope();
         }
 
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        public void BeginSceneScope()
         {
-            CurrentSceneScope?.Dispose();
-            CurrentSceneScope = new LifetimeScope();
+            ResolverHub.BeginSceneScope();
         }
-
-        private void OnSceneUnloaded(Scene scene)
+        public void EndSceneScope()
         {
-            CurrentSceneScope?.Dispose();
-            CurrentSceneScope = null;
+            ResolverHub.EndSceneScope();
         }
-
-        /// <summary>
-        /// 统一入口（不直接暴露 Scope）
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        public T Get<T>() where T : class
-        {
-            if (CurrentSceneScope != null &&
-                CurrentSceneScope.TryResolve<T>(out var sceneService))
-                return sceneService;
-
-            if (GlobalScope.TryResolve<T>(out var globalService))
-                return globalService;
-
-            throw new Exception($"Service not found: {typeof(T)}");
-        }
-
+       
     }
 }
 // UI / Button / View 里（可以偷懒）

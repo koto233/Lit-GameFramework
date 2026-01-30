@@ -11,6 +11,7 @@ public class GameEntry : EntryBase
     {
         Debug.Log("注册全局服务");
         // TODO: 注册全局服务
+       
     }
 
     protected override void Initialize(LifetimeScope scope)
